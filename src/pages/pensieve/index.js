@@ -218,7 +218,7 @@ export const pageQuery = graphql`
         fileAbsolutePath: { regex: "/content/blog/" }
         frontmatter: { draft: { ne: true } }
       }
-      sort: { order: DESC }
+      sort: { frontmatter: { date: DESC } }
     ) {
       edges {
         node {

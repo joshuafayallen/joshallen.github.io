@@ -162,7 +162,7 @@ const Blog = () => {
     query {
       posts: allMarkdownRemark(
         filter: { fileAbsolutePath: { regex: "/content/blog/" } }
-        sort: { order: DESC }
+        sort: { frontmatter: { date: DESC } }
       ) {
         edges {
           node {
