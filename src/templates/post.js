@@ -51,6 +51,13 @@ const StyledPostContent = styled.div`
 `;
 
 const PostTemplate = ({ data, location }) => {
+  if (!data.markdownRemark) {
+    return (
+      <Layout location={location}>
+        <p>Post not found.</p>
+      </Layout>
+    );
+  }
   const { frontmatter, html } = data.markdownRemark;
   const { title, date, tags } = frontmatter;
 

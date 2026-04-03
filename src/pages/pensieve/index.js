@@ -182,13 +182,16 @@ const PensievePage = ({ location, data }) => {
                     <footer>
                       <span className="post__date">{formattedDate}</span>
                       <ul className="post__tags">
-                        {tags.map((tag, i) => (
-                          <li key={i}>
-                            <Link to={`/pensieve/tags/${kebabCase(tag)}/`} className="inline-link">
-                              #{tag}
-                            </Link>
-                          </li>
-                        ))}
+                        {tags &&
+                          tags.map((tag, i) => (
+                            <li key={i}>
+                              <Link
+                                to={`/pensieve/tags/${kebabCase(tag)}/`}
+                                className="inline-link">
+                                #{tag}
+                              </Link>
+                            </li>
+                          ))}
                       </ul>
                     </footer>
                   </div>
