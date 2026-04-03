@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
-Sitemap: https://joshallen.github.io/sitemap-index.xml
-Host: https://joshallen.github.io
+Sitemap: https://joshuafayallen.github.io/sitemap-index.xml
+Host: https://joshuafayallen.github.io
