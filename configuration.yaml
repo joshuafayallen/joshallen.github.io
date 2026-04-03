@@ -1,0 +1,165 @@
+contacts:
+  name: Joshua Allen PhD
+  title: Data Scientist
+  email: joshua.f.allen@gmail.com
+  address: ""
+  location: United States
+  linkedin:
+    url: https://www.linkedin.com/in/joshua-allen-112b81119/
+    displayText: Joshua Allen
+  github:
+    url: https://github.com/joshuafayallen
+    displayText: "@joshuafayallen"
+  website:
+    url: https://joshuafayallen.github.io/
+    displayText: joshuafayallen.github.io
+
+position: Data Scientist
+
+tagline: Applied data scientist with 6+ years of experience in building end-to-end Bayesian models, causal inference pipelines, and production-ready data systems. Experienced with translating complex statistical models into business-facing products, including interactive web applications, and open-source datasets used by researchers worldwide. Proficient in Python, R, SQL, and modern ML tooling. 
+
+projects:
+  - title: Bayesian Marketing Mix Model
+    details:
+      format: Blog Post
+      link: https://joshuafayallen.github.io/blog/2025/nfl-marketing/
+    description:
+      - Adapted Marketing Mix Modeling (MMM) to quantify ROI for offensive play callers' use of personnel packages. 
+      - Navigated practical identification challenges, including sparse panel data, endogenous channel usage, and left-truncated career histories. 
+    tags: 
+      - Python
+      - R 
+      - Marketing
+      - Media Mixed Modeling
+      - MMM
+      - Bayesian Statistics
+      - Pandas
+      - Tidyverse
+  - title: The Football Factor Model 
+    details:
+      format: Blog Post
+      link: https://joshuafayallen.github.io/blog/2025/passing-td-factor-model/
+    description: 
+        - Modeled player performance based on values over replacement outcomes using Bayesian hierarchical regression using PyMC and R 
+        - Translated Bayesian high-density intervals into actionable roster recommendations, producing a 5-point per game improvement in fantasy football scoring.
+    tags: 
+      - Python
+      - R
+      - Bayesian Statistics
+      - Pandas
+      - R 
+      - Tidyverse
+  - title: Football Power Rankings
+    details:
+      format: Full-Stack Web Application
+      link: https://fantasy-football-project-psi.vercel.app/
+    description:
+      - Built a Bayesian Bradley-Terry model to rank NFL teams and incorporate uncertainty in estimation.
+      - Designed a full-stack interactive web app using FastAPI, React, and D3.
+      - Improved application scalability by transitioning from live model execution to persistent cache, reducing load time from minutes to milliseconds.
+
+
+jobs:
+  - position: Applied Scientist
+    company:
+      name: Georgia State University
+      link: https://politicalscience.gsu.edu/
+    product:
+      name: Georgia State University
+      link: https://politicalscience.gsu.edu/
+    description:
+      - Implemented and managed end-to-end data pipelines covering all phases of the data lifecycle using R and Quarto. Pipeline improved data deliverable time from 3 days to less than 2 hours.
+      - Applied NLP and LLMs to 3TB+ text corpora for named entity recognition and regression on embedding representations. 
+      - Leveraged Double Machine Learning, Synthetic Control Method, and sensitivity tests to quantify treatment effect uncertainty for stakeholders.
+      - Built 18+ production-grade webscrapers and developed open-source packages in R and Python packages for the largest open-source political executive communication text dataset.
+      - Mentored junior data scientists and advised colleagues on statistical analysis, scientific programming, and computational reproducibility.
+    from: "2019 Aug."
+    to: "2025 Aug."
+    tags:
+      - Data Science
+    location: Atlanta, GA
+  - position: Instructor of Record
+    company:
+      name: Georgia State University
+      link: https://politicalscience.gsu.edu/
+    product:
+      name: Research Methods
+      link: https://politicalscience.gsu.edu/
+
+    description:
+    - Instructed 100+ students annually in applied research design, including problem framing, causal inference, and research design.
+    - Developed curriculum translating abstract statistical concepts, DAG-based causal reasoning, linear regression, and hypothesis testing into structured frameworks for non-technical audiences.
+    - Developed original course materials, assessments, and programming exercises emphasizing reproducible analytical workflows and evidence-based decision making. 
+    from: "2023 Jan."
+    to: "2024 Aug."
+    tags:
+      - Stakeholder communication
+      - Consulting 
+      - Client-facing
+    location: Atlanta, GA
+
+
+objective: Seeking applied data science roles where rigorous modeling and business impact intersect.
+
+education:
+  - place:
+      name: Georgia State University
+      link: "https://www.gsu.edu/"
+    degree: "PhD"
+    major: Political Science
+    track: Political Economy and Statistics
+    from: "2019"
+    to: "2025"
+    location: Atlanta, GA 
+  - place:
+      name: Georgia State University
+      link: "https://www.gsu.edu/"
+    degree: "MA"
+    major: Political Science 
+    track: Political Economy and Statistics
+    from: "2017"
+    to: "2019"
+    location: Atlanta, GA 
+  - place: 
+      name: Sonoma State University
+      link: https://www.sonoma.edu/
+    degree: BA
+    major: Political Science
+    track: Political Science
+    from: "2013"
+    to: "2017"
+    location: Rohnert Park, CA 
+
+technical_expertise:
+  - Causal Inference
+  - Bayesian Statistics
+  - Quasi-Experimental Design
+  - Hierarchical Modeling
+
+
+languages:
+  - Python
+  - SQL
+  - R 
+  - Stan
+
+libraries:
+  - Polars
+  - Pandas
+  - Tidyverse
+  - PySpark
+  - PyMC
+  - Brms
+  - Scikit-learn
+  - Tidymodels
+  - FastAPI
+  - React 
+  - D3.js
+
+infrastructure:
+  - Docker
+  - Git
+  - Quarto
+  - RShiny
+  
+
