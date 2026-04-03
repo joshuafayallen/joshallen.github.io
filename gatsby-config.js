@@ -1,11 +1,12 @@
 const config = require('./src/config');
 
 module.exports = {
+  pathPrefix: `/joshallen.github.io`,
   siteMetadata: {
     title: 'Josh Allen',
     description:
       'Josh Allen is a Data Scientist who specializes in Causal Inference and Bayesian Statistics.',
-    siteUrl: 'https://joshallen.github.io', // No trailing slash allowed!
+    siteUrl: 'https://joshuafayallen.com', // No trailing slash allowed!
     image: '/og.png', // Path to your image you placed in the 'static' folder
     twitterUsername: '@bchiang7',
   },
