@@ -11,11 +11,25 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
   const { createPage } = actions;
   const postTemplate = path.resolve(`src/templates/post.js`);
   const tagTemplate = path.resolve('src/templates/tag.js');
+  const blogpostTemplate = path.resolve('src/templates/blog-post.js');
 
   const result = await graphql(`
     {
       postsRemark: allMarkdownRemark(
         filter: { fileAbsolutePath: { regex: "/content/posts/" } }
+        sort: { order: DESC, fields: [frontmatter___date] }
+        limit: 1000
+      ) {
+        edges {
+          node {
+            frontmatter {
+              slug
+            }
+          }
+        }
+      }
+      blogRemark: allMarkdownRemark(
+        filter: { fileAbsolutePath: { regex: "/content/blog/" } }
         sort: { order: DESC, fields: [frontmatter___date] }
         limit: 1000
       ) {
@@ -43,15 +57,31 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
 
   // Create post detail pages
   const posts = result.data.postsRemark.edges;
-
   posts.forEach(({ node }) => {
+    const slug = node.frontmatter.slug;
+    if (!slug) {
+      return;
+    }
     createPage({
-      path: node.frontmatter.slug,
+      path: slug,
       component: postTemplate,
-      context: {},
+      context: { slug },
     });
   });
 
+  // Blog posts → blog-post.js template
+  const blogPosts = result.data.blogRemark.edges;
+  blogPosts.forEach(({ node }) => {
+    const slug = node.frontmatter.slug;
+    if (!slug) {
+      return;
+    }
+    createPage({
+      path: slug,
+      component: blogpostTemplate,
+      context: { slug },
+    });
+  });
   // Extract tag data from query
   const tags = result.data.tagsGroup.group;
   // Make tag pages
