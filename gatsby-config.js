@@ -7,8 +7,8 @@ module.exports = {
     description:
       'Josh Allen is a Data Scientist who specializes in Causal Inference and Bayesian Statistics.',
     siteUrl: 'https://joshuafayallen.com', // No trailing slash allowed!
-    image: '/og.png', // Path to your image you placed in the 'static' folder
-    twitterUsername: '@bchiang7',
+    image: '', // Path to your image you placed in the 'static' folder
+    twitterUsername: '',
   },
   plugins: [
     `gatsby-plugin-react-helmet`,
