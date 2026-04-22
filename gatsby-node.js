@@ -98,28 +98,22 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
 
 // https://www.gatsbyjs.org/docs/node-apis/#onCreateWebpackConfig
 exports.onCreateWebpackConfig = ({ stage, loaders, actions }) => {
-  // https://www.gatsbyjs.org/docs/debugging-html-builds/#fixing-third-party-modules
-  if (stage === 'build-html' || stage === 'develop-html') {
+  if ((stage === 'build-html' || stage === 'develop-html') && loaders) {
     actions.setWebpackConfig({
       module: {
         rules: [
-          {
-            test: /scrollreveal/,
-            use: loaders.null(),
-          },
-          {
-            test: /animejs/,
-            use: loaders.null(),
-          },
-          {
-            test: /miniraf/,
-            use: loaders.null(),
-          },
+          { test: /scrollreveal/, use: loaders.null() },
+          { test: /animejs/, use: loaders.null() },
+          { test: /miniraf/, use: loaders.null() },
+          { test: /datatables\.net/, use: loaders.null() },
+          { test: /node-fetch/, use: loaders.null() },
+          { test: /\.(woff|woff2|ttf|eot)$/, use: loaders.null() },
         ],
       },
     });
   }
 
+  // Aliases apply to ALL stages, outside the if block
   actions.setWebpackConfig({
     resolve: {
       alias: {

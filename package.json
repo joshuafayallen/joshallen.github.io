@@ -32,8 +32,11 @@
     ]
   },
   "dependencies": {
+    "@loadable/component": "^5.16.7",
     "animejs": "^3.2.2",
-    "babel-plugin-styled-components": "^1.13.3",
+    "babel-plugin-styled-components": "^2.1.4",
+    "datatables.net-dt": "^2.3.7",
+    "datatables.net-react": "^1.0.1",
     "gatsby": "^5.16.1",
     "gatsby-core-utils": "^4.16.0",
     "gatsby-plugin-google-analytics": "^5.16.0",
@@ -53,6 +56,7 @@
     "gatsby-transformer-remark": "^6.16.0",
     "gatsby-transformer-sharp": "^5.16.0",
     "lodash": "^4.18.1",
+    "papaparse": "^5.5.3",
     "prismjs": "^1.30.0",
     "prop-types": "^15.8.1",
     "react": "^18.3.1",

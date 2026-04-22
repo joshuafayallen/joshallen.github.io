@@ -30,6 +30,10 @@ module.exports = {
       url: '/#blog',
     },
     {
+      name: 'NFL Consensus Big Board',
+      url: '/big-board',
+    },
+    {
       name: 'Work',
       url: '/#projects',
     },
