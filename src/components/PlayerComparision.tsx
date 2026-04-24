@@ -42,6 +42,32 @@ const SearchInput = styled.input`
   &:focus { outline: 1px solid var(--green); }
 `;
 
+const FilterBar = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 1.5rem;
+`;
+
+const FilterChip = styled.button`
+  background: ${(props: { $active: boolean }) => props.$active ? 'rgba(100, 255, 218, 0.15)' : 'transparent'};
+  border: 1px solid ${(props: { $active: boolean }) => props.$active ? 'rgba(100, 255, 218, 0.5)' : 'var(--lightest-navy)'};
+  color: ${(props: { $active: boolean }) => props.$active ? 'var(--green)' : 'var(--slate)'};
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  &:hover {
+    border-color: var(--green);
+    color: var(--green);
+  }
+`;
+
+
 const Dropdown = styled.div`
   position: absolute;
   top: 100%;
@@ -164,8 +190,9 @@ const PlayerComparison = ({ data }: { data: PlayerData[] }) => {
   const [isClient, setIsClient] = useState(false);
   const [chartWidth, setChartWidth] = useState(500);
   const [searchQuery, setSearchQuery] = useState("");
-  
-  const [selected, setSelected] = useState<string[]>(() => 
+  const [activePosition, setActivePosition] = useState<string | null>(null);
+
+  const [selected, setSelected] = useState<string[]>(() =>
     data.slice(0, 5).map(d => d.player)
   );
 
@@ -180,21 +207,32 @@ const PlayerComparison = ({ data }: { data: PlayerData[] }) => {
     return () => observer.disconnect();
   }, [isClient]);
 
-  // ADD this missing function
   const removePlayer = (name: string) => {
     setSelected(prev => prev.filter(p => p !== name));
   };
 
+  // Derive valid positions from data
+  const positions = useMemo(() => {
+  const unique = Array.from(new Set(data.map(d => d.Position).filter(Boolean)));
+  return unique.sort();
+}, [data]);
+
+  // Filter pool by active position before search
+  const positionFilteredData = useMemo(() => {
+    if (!activePosition) return data;
+    return data.filter(d => d.Position === activePosition);
+  }, [data, activePosition]);
+
   const searchResults = useMemo(() => {
     if (!searchQuery) return [];
     const query = searchQuery.toLowerCase();
-    return data.filter(d => 
-      d.player.toLowerCase().includes(query) && !selected.includes(d.player)
-    ).slice(0, 5);
-  }, [data, searchQuery, selected]);
+    return positionFilteredData
+      .filter(d => d.player.toLowerCase().includes(query) && !selected.includes(d.player))
+      .slice(0, 5);
+  }, [positionFilteredData, searchQuery, selected]);
 
-  const selectedData = useMemo(() => 
-    data.filter(d => selected.includes(d.player)), 
+  const selectedData = useMemo(() =>
+    data.filter(d => selected.includes(d.player)),
     [data, selected]
   );
 
@@ -204,22 +242,40 @@ const PlayerComparison = ({ data }: { data: PlayerData[] }) => {
     const maxs = selectedData.map(d => d['hdi_97%'] ?? (d.mean + 2 * d.sd));
     const gMin = Math.min(...mins);
     const gMax = Math.max(...maxs);
-    const pad = (gMax - gMin) * 0.15 || 0.5; 
+    const pad = (gMax - gMin) * 0.15 || 0.5;
     return { domainMin: gMin - pad, domainMax: gMax + pad };
   }, [selectedData]);
 
   const xScale = (v: number) => ((v - domainMin) / (domainMax - domainMin)) * chartWidth;
   const ticks = Array.from({ length: 6 }, (_, i) => domainMin + (domainMax - domainMin) * (i / 5));
 
-  // THIS IS THE KEY LINE - bail out during SSR
   if (!isClient) return null;
-
 
   return (
     <div ref={wrapRef}>
+      {/* Position filter */}
+      <FilterBar>
+        <FilterChip
+          $active={activePosition === null}
+          onClick={() => setActivePosition(null)}
+        >
+          All
+        </FilterChip>
+        {positions.map(pos => (
+          <FilterChip
+            key={pos}
+            $active={activePosition === pos}
+            onClick={() => setActivePosition(pos)}
+          >
+            {pos}
+          </FilterChip>
+        ))}
+      </FilterBar>
+
+      {/* Player search */}
       <SearchContainer>
-        <SearchInput 
-          placeholder="Type player name..." 
+        <SearchInput
+          placeholder="Type player name..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
@@ -237,19 +293,19 @@ const PlayerComparison = ({ data }: { data: PlayerData[] }) => {
         )}
       </SearchContainer>
 
+      {/* Selected player chips */}
       <ChipGrid>
-  {selected.map(name => {
-    const idx = data.findIndex(p => p.player === name);
-    // Use the specific color assigned to this player from your Bayesian data
-    const color = SERIES_COLORS[idx % SERIES_COLORS.length];
-    return (
-      <Chip key={name} $bordercolor={color} onClick={() => removePlayer(name)}>
-        <ColorDot $color={color} />
-        {name} <span style={{ marginLeft: '6px', opacity: 0.6 }}>×</span>
-      </Chip>
-    );
-  })}
-</ChipGrid>
+        {selected.map(name => {
+          const idx = data.findIndex(p => p.player === name);
+          const color = SERIES_COLORS[idx % SERIES_COLORS.length];
+          return (
+            <Chip key={name} $bordercolor={color} onClick={() => removePlayer(name)}>
+              <ColorDot $color={color} />
+              {name} <span style={{ marginLeft: '6px', opacity: 0.6 }}>×</span>
+            </Chip>
+          );
+        })}
+      </ChipGrid>
 
       <ChartWrap>
         <Legend>
@@ -263,7 +319,7 @@ const PlayerComparison = ({ data }: { data: PlayerData[] }) => {
             <PIRow key={d.player}>
               <PILabel title={d.player}>{d.player}</PILabel>
               <PointInterval
-                stats={d} // Correct prop name
+                stats={d}
                 domainMin={domainMin}
                 domainMax={domainMax}
                 width={chartWidth}
@@ -273,7 +329,7 @@ const PlayerComparison = ({ data }: { data: PlayerData[] }) => {
           );
         })}
 
- <AxisWrap>
+        <AxisWrap>
           <svg width={chartWidth} height={30} style={{ overflow: 'visible', display: 'block' }}>
             <line x1={0} x2={chartWidth} y1={0} y2={0} stroke="var(--lightest-slate)" />
             {ticks.map((t, i) => (

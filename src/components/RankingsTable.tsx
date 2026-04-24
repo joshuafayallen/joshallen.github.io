@@ -7,6 +7,33 @@ import 'datatables.net-dt';
 
 DataTable.use(DataTablesCore);
 
+
+const FilterBar = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+`;
+
+const FilterChip = styled.button`
+  background: ${(props: { $active: boolean }) => props.$active ? 'rgba(100, 255, 218, 0.15)' : 'transparent'};
+  border: 1px solid ${(props: { $active: boolean }) => props.$active ? 'rgba(100, 255, 218, 0.5)' : 'var(--lightest-navy)'};
+  color: ${(props: { $active: boolean }) => props.$active ? 'var(--green)' : 'var(--slate)'};
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+
+  &:hover {
+    border-color: var(--green);
+    color: var(--green);
+  }
+`;
+
 const FadeWrapper = styled.div<{ $isExpanded: boolean }>`
   position: relative;
   ${props => !props.$isExpanded && `
@@ -121,10 +148,44 @@ const ResultCount = styled.span`font-family: var(--font-mono); font-size: var(--
 
 export function RankingsTable({ data = [] }: { data: any[] }) {
   const tableRef = useRef<any>(null);
-
   const [searchQuery, setSearchQuery] = useState("");
+  const [activePosition, setActivePosition] = useState<string | null>(null);
   const [info, setInfo] = useState({ displayed: data?.length || 0, total: data?.length || 0 });
 
+  // Derive unique positions from data
+  const positions = useMemo(() => {
+    const unique = Array.from(new Set(data.map(d => d.Position).filter(Boolean)));
+    return unique.sort();
+  }, [data]);
+
+  const updateInfo = () => {
+    const api = tableRef.current?.dt();
+    if (!api) return;
+    setInfo({
+      displayed: api.page.info().recordsDisplay,
+      total: api.page.info().recordsTotal,
+    });
+  };
+
+  const onSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setSearchQuery(val);
+    const api = tableRef.current.dt();
+    api.search(val).draw();
+    updateInfo();
+  };
+
+  const onPositionFilter = (position: string | null) => {
+    setActivePosition(position);
+    const api = tableRef.current.dt();
+    // Column index 3 is Position
+    if (position) {
+      api.column(3).search(`^${position}$`, true, false).draw();
+    } else {
+      api.column(3).search('').draw();
+    }
+    updateInfo();
+  };
 
   const columns = [
     {
@@ -142,8 +203,8 @@ export function RankingsTable({ data = [] }: { data: any[] }) {
       }
     },
     { data: 'player', title: 'Prospect', className: 'prospect-cell' },
-    { data: 'School', title: 'School'},
-    { data: 'Position', title: 'Position'},
+    { data: 'School', title: 'School' },
+    { data: 'Position', title: 'Position' },
     { 
       data: 'mean', 
       title: 'Implied Skill',
@@ -161,18 +222,6 @@ export function RankingsTable({ data = [] }: { data: any[] }) {
     { data: 'The Ringer', title: 'The Ringer', defaultContent: '—' }
   ];
 
-  const onSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value;
-    setSearchQuery(val);
-    const api = tableRef.current.dt();
-    api.search(val).draw();
-    
-    setInfo({
-      displayed: api.page.info().recordsDisplay,
-      total: api.page.info().recordsTotal
-    });
-  };
-
   return (
     <Wrapper>
       <TopBar>
@@ -180,37 +229,47 @@ export function RankingsTable({ data = [] }: { data: any[] }) {
         <ResultCount>{info.displayed} of {info.total} players</ResultCount>
       </TopBar>
 
+      <FilterBar>
+        <FilterChip
+          $active={activePosition === null}
+          onClick={() => onPositionFilter(null)}
+        >
+          All
+        </FilterChip>
+        {positions.map(pos => (
+          <FilterChip
+            key={pos}
+            $active={activePosition === pos}
+            onClick={() => onPositionFilter(pos)}
+          >
+            {pos}
+          </FilterChip>
+        ))}
+      </FilterBar>
+
       <DataTable
-        data={data} // Pass the full data array here
+        data={data}
         columns={columns}
         ref={tableRef}
         className="datatable-custom"
         options={{
-  layout: {
-    topStart: null,
-    topEnd: null,
-    bottomStart: 'info',
-    bottomEnd: 'paging'
-  },
-  pageLength: 10,
-  pagingType: 'full_numbers',
-  order: [[0, 'asc']],
-  language: {
-    entries: {
-      _: 'prospects',
-      1: 'prospect'
-    },
-    paginate: {
-      first: '«',
-      previous: '←',
-      next: '→',
-      last: '»'
-    }
-  }
-}}
+          layout: {
+            topStart: null,
+            topEnd: null,
+            bottomStart: 'info',
+            bottomEnd: 'paging'
+          },
+          pageLength: 10,
+          pagingType: 'full_numbers',
+          order: [[0, 'asc']],
+          language: {
+            entries: { _: 'prospects', 1: 'prospect' },
+            paginate: { first: '«', previous: '←', next: '→', last: '»' }
+          }
+        }}
       />
     </Wrapper>
   );
 }
 
-export default RankingsTable
+export default RankingsTable;

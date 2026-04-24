@@ -108,6 +108,7 @@ exports.onCreateWebpackConfig = ({ stage, loaders, actions }) => {
           { test: /datatables\.net/, use: loaders.null() },
           { test: /node-fetch/, use: loaders.null() },
           { test: /\.(woff|woff2|ttf|eot)$/, use: loaders.null() },
+          { test: /react-transition-group/, use: loaders.null() },
         ],
       },
     });
